@@ -155,8 +155,30 @@ Cuando inicies una sesión en este proyecto:
 
 ## Development Guidelines
 
+### Principio #1: Mobile-first (OBLIGATORIO)
+
+**Esta app se usa en teléfonos durante eventos en vivo.** Toda decisión de diseño pasa por el filtro mobile-first. No es una preferencia, es el caso de uso principal.
+
+- **Touch targets:** mínimo 48x48px (botones, cards clickeables, selects)
+- **Tipografía:** base 16px mínimo, nunca reducir a 14px en mobile
+- **Espaciado:** padding vertical entre elementos interactivos mínimo 12px para evitar toques accidentales
+- **Grilla productos:** 2 columnas en mobile (NUNCA 3-4), 3-4 solo en tablet+
+- **Navegación:** bottom nav en mobile, no top nav con dropdowns
+- **Imágenes:** lazy loading, aspect-ratio definido para evitar CLS
+- **Formularios:** inputs con `inputmode` correcto (numeric para precios/stock, email para emails)
+- **Feedback háptico visual:** todo toque debe tener respuesta inmediata (scale, color, vibration si disponible)
+- **Estados críticos visibles:** stock 0, día cerrado, conexión perdida — siempre visibles en viewport
+- **Sin hover en mobile:** toda funcionalidad debe funcionar sin hover state
+- **Loading states:** skeleton screens, no spinners que bloquean viewport
+- **Viewport lock:** scroll vertical nativo, nunca horizontal en mobile
+- **Contraste:** WCAG 2.2 AA mínimo (4.5:1 texto, 3:1 UI)
+- **Reduced motion:** respetar `prefers-reduced-motion`
+
+**Test obligatorio:** antes de considerar una feature completa, verificar en viewport 375x667 (iPhone SE). Si no funciona ahí, no funciona.
+
+### Otras guías
+
 - **Idioma:** Solo español (UI, mensajes, commits)
-- **Mobile-first:** Diseñar para pantallas táctiles, botones grandes (mínimo 44x44px)
 - **Realtime:** Usar Supabase Realtime subscriptions, no polling
 - **Imágenes:** Solo URLs externas (ukiyostudio.evaldez.ar), no upload
 - **Precios:** Siempre usar precios de venta reales para reportes (no sugeridos)

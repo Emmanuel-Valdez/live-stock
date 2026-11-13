@@ -1,7 +1,14 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-100">
-  <div class="text-center">
-    <h1 class="text-4xl font-bold text-gray-800 mb-4">Live Stock</h1>
-    <p class="text-xl text-gray-600">Ukiyo Studio</p>
-    <p class="mt-8 text-gray-500">Sistema de ventas en tiempo real</p>
-  </div>
+<script lang="ts">
+  import { onMount } from 'svelte'
+  import { goto } from '$app/navigation'
+  import { supabase } from '$lib/supabase'
+
+  onMount(async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    goto(user ? '/admin' : '/ventas')
+  })
+</script>
+
+<div class="min-h-dvh bg-bg flex items-center justify-center">
+  <p class="text-ink-muted">Cargando...</p>
 </div>

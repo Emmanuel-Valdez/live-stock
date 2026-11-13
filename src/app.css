@@ -1,3 +1,130 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    color: #1a1a1a;
+    background: #fafaf7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    min-height: 100dvh;
+    overscroll-behavior-y: none;
+  }
+
+  input, select, textarea {
+    font-size: 16px;
+  }
+
+  :focus-visible {
+    outline: 2px solid #1e3a5f;
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .btn {
+    @apply min-h-touch inline-flex items-center justify-center px-6 py-3 font-semibold rounded-lg transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-accent text-white hover:bg-accent-hover;
+  }
+
+  .btn-secondary {
+    @apply btn border border-border text-ink hover:bg-bg;
+  }
+
+  .btn-danger {
+    @apply btn bg-danger text-white hover:bg-danger/90;
+  }
+
+  .btn-success {
+    @apply btn bg-success text-white hover:bg-success/90;
+  }
+
+  .input {
+    @apply w-full min-h-touch px-4 py-3 border border-border rounded-lg bg-surface focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-all;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-ink-muted mb-2;
+  }
+
+  .card {
+    @apply bg-surface rounded-xl shadow-sm border border-border overflow-hidden;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full;
+  }
+
+  .badge-success {
+    @apply badge bg-success-bg text-success;
+  }
+
+  .badge-danger {
+    @apply badge bg-danger-bg text-danger;
+  }
+
+  .badge-warning {
+    @apply badge bg-warning-bg text-warning;
+  }
+
+  .touch-target {
+    @apply min-w-touch min-h-touch flex items-center justify-center;
+  }
+
+  .display {
+    @apply font-display font-bold tracking-tight;
+  }
+
+  .mono {
+    @apply font-mono;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}
