@@ -11,16 +11,10 @@ export type Producto = {
   created_at: string
 }
 
-export type Venta = {
-  id: string
-  producto_id: string
-  precio_venta: number
-  medio_cobro: 'efectivo' | 'transferencia' | 'qr' | 'tarjeta'
-  timestamp: string
-  dia: string
-}
-
-export function subscribeToProductos(callback: (productos: Producto[]) => void): RealtimeChannel {
+export function subscribeToProductos(
+  callback: (productos: Producto[]) => void,
+  onStatus?: (status: string) => void
+): RealtimeChannel {
   return supabase
     .channel('productos-changes')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'productos' }, () => {
@@ -28,14 +22,12 @@ export function subscribeToProductos(callback: (productos: Producto[]) => void):
         if (data) callback(data as Producto[])
       })
     })
-    .subscribe()
+    .subscribe((status) => onStatus?.(status))
 }
 
-export function subscribeToVentas(callback: (venta: Venta) => void): RealtimeChannel {
+export function subscribeToVentas(callback: () => void, onStatus?: (status: string) => void): RealtimeChannel {
   return supabase
     .channel('ventas-changes')
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'ventas' }, (payload) => {
-      callback(payload.new as Venta)
-    })
-    .subscribe()
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'ventas' }, () => callback())
+    .subscribe((status) => onStatus?.(status))
 }

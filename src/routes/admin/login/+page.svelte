@@ -1,16 +1,18 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { goto } from '$app/navigation'
-  import { login, currentUser } from '$lib/stores/auth'
+  import { resolve } from '$app/paths'
+  import { checkAuth, login } from '$lib/stores/auth'
 
   let email = import.meta.env.VITE_ADMIN_EMAIL || ''
   let password = ''
   let error = ''
   let loading = false
 
-  onMount(() => {
-    if ($currentUser) {
-      goto('/admin')
+  onMount(async () => {
+    const user = await checkAuth()
+    if (user) {
+      goto(resolve(user.email === import.meta.env.VITE_ADMIN_EMAIL ? '/admin' : '/ventas'), { replace: true })
     }
   })
 
@@ -18,8 +20,8 @@
     error = ''
     loading = true
     try {
-      await login(email, password)
-      goto('/admin')
+      const user = await login(email, password)
+      goto(resolve(user.email === import.meta.env.VITE_ADMIN_EMAIL ? '/admin' : '/ventas'))
     } catch (e: any) {
       error = e.message || 'Error al iniciar sesión'
     } finally {

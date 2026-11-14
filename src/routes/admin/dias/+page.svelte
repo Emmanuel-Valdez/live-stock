@@ -1,11 +1,11 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { diaActual, loadDiaActual, cerrarDia, reabrirDia } from '$lib/stores/dias'
+  import { diaActual, loadDiaActual, cerrarDia, reabrirDia, reiniciarDia } from '$lib/stores/dias'
 
   let loading = false
 
   onMount(async () => {
-    await loadDiaActual()
+    await loadDiaActual(true)
   })
 
   async function handleClose() {
@@ -18,6 +18,13 @@
   async function handleReopen() {
     loading = true
     await reabrirDia()
+    loading = false
+  }
+
+  async function handleReset() {
+    if (!confirm('¿Reiniciar el día? Se eliminarán todas las ventas y se reiniciará el stock.')) return
+    loading = true
+    await reiniciarDia()
     loading = false
   }
 
@@ -54,7 +61,7 @@
       {/if}
     </div>
 
-    <div class="card p-4">
+    <div class="card p-4 mb-4">
       {#if $diaActual.estado === 'abierto'}
         <button
           on:click={handleClose}
@@ -78,6 +85,20 @@
           Reabrir día
         </button>
       {/if}
+    </div>
+
+    <div class="card p-4 border-danger/30">
+      <p class="text-sm text-ink-muted mb-3">Eliminar todas las ventas del día y reiniciar el stock.</p>
+      <button
+        on:click={handleReset}
+        disabled={loading}
+        class="btn-danger w-full"
+      >
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+        </svg>
+        Reiniciar día
+      </button>
     </div>
   {:else}
     <div class="card p-12 text-center">

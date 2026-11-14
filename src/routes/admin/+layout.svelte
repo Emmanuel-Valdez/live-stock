@@ -12,7 +12,7 @@
 </script>
 
 <nav class="fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-border shadow-lg sm:hidden safe-bottom" aria-label="Navegación principal">
-  <div class="grid grid-cols-4 h-16">
+  <div class="grid grid-cols-5 h-16">
     <a
       href="/admin"
       class="touch-target flex flex-col items-center justify-center gap-1 {currentPath === '/admin' ? 'text-accent' : 'text-ink-muted'}"
@@ -56,6 +56,17 @@
       </svg>
       <span class="text-xs font-medium">Días</span>
     </a>
+
+    <button
+      type="button"
+      onclick={handleLogout}
+      class="touch-target flex flex-col items-center justify-center gap-1 text-ink-muted"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+      </svg>
+      <span class="text-xs font-medium">Salir</span>
+    </button>
   </div>
 </nav>
 
@@ -95,7 +106,7 @@
       </nav>
     </div>
     <button
-      on:click={handleLogout}
+      onclick={handleLogout}
       class="px-4 py-2 text-sm font-medium text-ink-muted hover:text-danger rounded-lg hover:bg-danger-bg transition-colors"
     >
       Salir

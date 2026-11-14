@@ -1,11 +1,15 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { goto } from '$app/navigation'
-  import { supabase } from '$lib/supabase'
+  import { resolve } from '$app/paths'
+  import { checkAuth } from '$lib/stores/auth'
 
   onMount(async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    goto(user ? '/admin' : '/ventas')
+    const user = await checkAuth()
+    goto(
+      resolve(!user ? '/admin/login' : user.email === import.meta.env.VITE_ADMIN_EMAIL ? '/admin' : '/ventas'),
+      { replace: true }
+    )
   })
 </script>
 

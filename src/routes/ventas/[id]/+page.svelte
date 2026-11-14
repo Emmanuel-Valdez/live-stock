@@ -3,6 +3,7 @@
   import { page } from '$app/stores'
   import { supabase } from '$lib/supabase'
   import { goto } from '$app/navigation'
+  import { loadDiaActual } from '$lib/stores/dias'
   import type { Producto } from '$lib/stores/realtime'
 
   let producto: Producto | null = null
@@ -12,6 +13,11 @@
   let success = false
   let loading = false
   let productoId = ''
+  let remainingStock: number | null = null
+  let diaCerrado = false
+  let diaNoIniciado = false
+  let availabilityChecked = false
+  let availabilityError = ''
 
   const medios_cobro = [
     { value: 'efectivo', label: 'Efectivo', icon: '💵' },
@@ -23,6 +29,23 @@
   onMount(async () => {
     productoId = $page.params.id
     await loadProducto()
+
+    if (!producto) return
+
+    const [salesResult, dia] = await Promise.all([
+      supabase.from('ventas').select('id', { count: 'exact', head: true }).eq('producto_id', productoId),
+      loadDiaActual()
+    ])
+
+    if (salesResult.error || salesResult.count === null) {
+      availabilityError = 'No se pudo verificar la disponibilidad. No se puede registrar la venta.'
+    } else {
+      remainingStock = Math.max(0, producto.stock_total - salesResult.count)
+      diaNoIniciado = !dia
+      diaCerrado = dia?.estado === 'cerrado'
+    }
+
+    availabilityChecked = true
   })
 
   async function loadProducto() {
@@ -44,6 +67,21 @@
   async function handleVenta() {
     error = ''
     success = false
+
+    if (diaCerrado) {
+      error = 'El día está cerrado. No se pueden registrar ventas.'
+      return
+    }
+
+    if (diaNoIniciado) {
+      error = 'El día no está iniciado. Pedile al administrador que lo abra.'
+      return
+    }
+
+    if (remainingStock === null || remainingStock <= 0 || availabilityError) {
+      error = availabilityError || 'Sin stock disponible para este producto.'
+      return
+    }
 
     if (!medio_cobro) {
       error = 'Seleccioná un medio de cobro'
@@ -128,6 +166,25 @@
         {/if}
       </div>
 
+      <div class="card p-4 mb-4" aria-live="polite">
+        {#if !availabilityChecked}
+          <p class="text-sm text-ink-muted">Verificando disponibilidad...</p>
+        {:else if availabilityError}
+          <p class="text-sm font-medium text-danger">{availabilityError}</p>
+        {:else}
+          <p class="text-sm font-semibold text-ink">Quedan {remainingStock} unidades</p>
+          {#if remainingStock !== null && remainingStock <= 0}
+            <p class="text-sm font-semibold text-danger mt-1">Sin stock</p>
+          {/if}
+          {#if diaCerrado}
+            <p class="text-sm font-semibold text-danger mt-1">Día cerrado. No se pueden registrar ventas.</p>
+          {/if}
+          {#if diaNoIniciado}
+            <p class="text-sm font-semibold text-danger mt-1">Día no iniciado. El administrador debe iniciar el día.</p>
+          {/if}
+        {/if}
+      </div>
+
       {#if error}
         <div class="bg-danger-bg border border-danger/20 rounded-lg p-4 mb-4" role="alert">
           <p class="text-sm font-medium text-danger">{error}</p>
@@ -180,7 +237,7 @@
           </a>
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !availabilityChecked || !!availabilityError || diaCerrado || diaNoIniciado || remainingStock === null || remainingStock <= 0}
             class="btn-primary flex-1"
           >
             {loading ? 'Procesando...' : 'Vender'}
