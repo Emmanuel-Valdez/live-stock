@@ -3,6 +3,8 @@
   import { diaActual, loadDiaActual, cerrarDia, reabrirDia, reiniciarDia } from '$lib/stores/dias'
 
   let loading = false
+  let error = ''
+  let success = ''
 
   onMount(async () => {
     await loadDiaActual(true)
@@ -11,12 +13,16 @@
   async function handleClose() {
     if (!confirm('¿Cerrar el día actual? No se podrán registrar más ventas.')) return
     loading = true
+    error = ''
+    success = ''
     await cerrarDia()
     loading = false
   }
 
   async function handleReopen() {
     loading = true
+    error = ''
+    success = ''
     await reabrirDia()
     loading = false
   }
@@ -24,7 +30,15 @@
   async function handleReset() {
     if (!confirm('¿Reiniciar el día? Se eliminarán todas las ventas y se reiniciará el stock.')) return
     loading = true
-    await reiniciarDia()
+    error = ''
+    success = ''
+    const result = await reiniciarDia()
+    if (result.error) {
+      error = result.error.message
+    } else {
+      success = 'Día reiniciado correctamente'
+      setTimeout(() => success = '', 3000)
+    }
     loading = false
   }
 
@@ -44,6 +58,19 @@
 
 <div class="px-4 py-6 max-w-lg mx-auto">
   <h1 class="display text-3xl text-ink mb-6">Días</h1>
+
+  {#if error}
+    <div class="bg-danger-bg border border-danger/20 rounded-lg p-3 mb-4" role="alert">
+      <p class="text-sm font-semibold text-danger">Error</p>
+      <p class="text-sm text-danger/80 mt-1">{error}</p>
+    </div>
+  {/if}
+
+  {#if success}
+    <div class="bg-success-bg border border-success/20 rounded-lg p-3 mb-4" role="status">
+      <p class="text-sm font-semibold text-success">{success}</p>
+    </div>
+  {/if}
 
   {#if $diaActual}
     <div class="card p-6 mb-4">
