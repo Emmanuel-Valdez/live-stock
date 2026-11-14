@@ -187,7 +187,31 @@ Cuando inicies una sesión en este proyecto:
 ## Current Status
 
 Change activo: `live-stock-event-app`
-- Todos los artifacts de planning completados (proposal, specs, design, tasks)
-- Listo para implementar
+- Progreso: 43/45 tareas completadas (96%)
+- Deploy completado en Netlify: https://lsukiyo.netlify.app/
+- Diseño mobile-first implementado con sistema de diseño completo
 
-Próximo paso: Ejecutar tareas desde `openspec/changes/live-stock-event-app/tasks.md`
+### Próximos pasos para próxima sesión:
+
+1. **Test end-to-end en producción (10.4)**
+   - Login como admin en https://lsukiyo.netlify.app/admin/login
+   - Crear un producto de prueba con imagen de ukiyostudio.evaldez.ar
+   - Registrar venta desde móvil (probar en 2 dispositivos)
+   - Verificar realtime sync entre dispositivos
+   - Cerrar día desde admin/dias
+   - Ver reportes con exportación CSV
+
+2. **Dominio personalizado (10.3) - opcional**
+   - Configurar en Netlify → Domain settings
+   - Agregar DNS records si es necesario
+
+3. **Detalles de pulido pendientes**
+   - Agregar iconos PWA (icon-192.png, icon-512.png) en /static
+   - Probar accesibilidad con screen reader
+   - Verificar rendimiento en móvil real (no solo DevTools)
+   - Test offline (aunque no es requisito, verificar que no rompe)
+
+4. **Mejoras de seguridad (opcional para producción)**
+   - Implementar middleware para verificar que solo el email admin puede acceder a /admin/*
+   - Refinar políticas RLS en Supabase (actualmente abiertas para authenticated)
+   - Considerar rate limiting para endpoints críticos

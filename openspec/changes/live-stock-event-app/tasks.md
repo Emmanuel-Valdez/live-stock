@@ -68,7 +68,7 @@
 
 ## 10. Deploy
 
-- [ ] 10.1 Configurar proyecto en Vercel (o Netlify) y conectar con el repo. Verificar que el deploy automático funciona
-- [ ] 10.2 Configurar variables de entorno (SUPABASE_URL, SUPABASE_ANON_KEY) en Vercel/Netlify. Verificar que la app funciona en producción
+- [x] 10.1 Configurar proyecto en Vercel (o Netlify) y conectar con el repo. Verificar que el deploy automático funciona
+- [x] 10.2 Configurar variables de entorno (SUPABASE_URL, SUPABASE_ANON_KEY) en Vercel/Netlify. Verificar que la app funciona en producción
 - [ ] 10.3 Configurar dominio personalizado si es necesario. Verificar que la app es accesible desde el dominio final
 - [ ] 10.4 Test end-to-end en producción: login admin, crear producto, registrar venta desde móvil, verificar realtime sync, cerrar día, ver reporte. Verificar que todo funciona correctamente en el deploy final
