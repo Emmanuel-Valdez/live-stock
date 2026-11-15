@@ -4,11 +4,13 @@
   import { supabase } from '$lib/supabase'
   import { goto } from '$app/navigation'
   import { loadDiaActual } from '$lib/stores/dias'
+  import { getFechaArgentina } from '$lib/utils/fecha'
   import type { Producto } from '$lib/stores/realtime'
 
   let producto: Producto | null = null
   let precio = 0
   let medio_cobro: 'efectivo' | 'transferencia' | 'qr' | 'tarjeta' | '' = ''
+  let nota = ''
   let error = ''
   let success = false
   let loading = false
@@ -99,7 +101,9 @@
       const { error: insertError } = await supabase.from('ventas').insert([{
         producto_id: productoId,
         precio_venta: precio,
-        medio_cobro: medio_cobro
+        medio_cobro: medio_cobro,
+        dia: getFechaArgentina(),
+        nota: nota || null
       }])
 
       if (insertError) throw insertError
@@ -229,6 +233,18 @@
               {/each}
             </div>
           </fieldset>
+        </div>
+
+        <div class="card p-4">
+          <label for="nota" class="label">Aclaración (opcional)</label>
+          <textarea
+            id="nota"
+            bind:value={nota}
+            rows="2"
+            maxlength="200"
+            class="input resize-none"
+            placeholder="Ej: cliente pidió sin envolver, producto con detalle, etc."
+          ></textarea>
         </div>
 
         <div class="flex gap-3 pt-2">

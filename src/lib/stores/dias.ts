@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store'
 import { supabase } from '$lib/supabase'
+import { getFechaArgentina } from '$lib/utils/fecha'
 
 export type DiaEvento = {
   id: string
@@ -11,7 +12,7 @@ export type DiaEvento = {
 export const diaActual = writable<DiaEvento | null>(null)
 
 export async function loadDiaActual(createIfMissing = false) {
-  const today = new Date().toISOString().split('T')[0]
+  const today = getFechaArgentina()
 
   const { data: existente } = await supabase
     .from('dias_evento')
@@ -42,7 +43,7 @@ export async function loadDiaActual(createIfMissing = false) {
 }
 
 export async function cerrarDia() {
-  const today = new Date().toISOString().split('T')[0]
+  const today = getFechaArgentina()
 
   const { data } = await supabase
     .from('dias_evento')
@@ -59,7 +60,7 @@ export async function cerrarDia() {
 }
 
 export async function reabrirDia() {
-  const today = new Date().toISOString().split('T')[0]
+  const today = getFechaArgentina()
 
   const { data } = await supabase
     .from('dias_evento')
@@ -76,7 +77,7 @@ export async function reabrirDia() {
 }
 
 export async function reiniciarDia() {
-  const today = new Date().toISOString().split('T')[0]
+  const today = getFechaArgentina()
 
   const { error: ventasError } = await supabase
     .from('ventas')
@@ -95,9 +96,6 @@ export async function reiniciarDia() {
   if (dia) {
     diaActual.set(dia as DiaEvento)
   }
-
-  return { data: dia }
-}
 
   return { data: dia }
 }
